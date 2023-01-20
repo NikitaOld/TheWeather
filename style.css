@@ -1,0 +1,135 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-weight: 400;
+    font-style: normal;
+    color: black;
+    font-family: "Roboto Light", serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #E5E5E5;
+}
+
+input{
+    font-family: inherit; /* 1 */
+    font-size: inherit; /* 1 */
+    line-height: inherit; /* 1 */
+    margin: 0; /* 2 */
+    padding: 0 0;
+}
+
+li{
+    list-style-type: none;
+}
+
+button {
+    padding: 0;
+    border: none;
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.button_active{
+    background-color: black;
+    color: white;
+}
+
+.theWeather{
+    margin: auto;
+    width: 620px;
+    height: 460px;
+    background-color: white;
+    padding: 10px;
+    box-shadow:  31px 31px 62px #bebebe,
+    -31px -31px 62px #ffffff;
+}
+
+.theWeather_inner{
+    height: 100%;
+    width: 100%;
+    border: black 1px solid;
+    display: grid;
+    grid-template-areas: 'search search'
+                         'weather location';
+    grid-template-rows: 40px ;
+}
+
+.search-form{
+    grid-area: search;
+    padding: 5px 5px;
+    width: 100%;
+    border-bottom: black 1px solid;
+    display: flex;
+}
+
+.search-form__input{
+    border: none;
+    flex: 1;
+    outline: none;
+}
+
+.the-weather-bar{
+    display: grid;
+    grid-template-rows: 1fr 0.1fr;
+    grid-area: weather;
+    border-right: black 1px solid;
+}
+
+.weather-display{
+    border-bottom: black 1px solid;
+    display: flex;
+}
+
+.weather-tabs__button{
+    border-right: black 1px solid;
+    font-size: 14px;
+}
+
+.weather-tabs__button:last-child{
+    border: none;
+}
+
+.weather-tabs{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-right: black 1px solid;
+}
+
+.weather-tabs:last-child{
+    border-right: none;
+}
+
+.locations-bar{
+    grid-area: location;
+    display: flex;
+    flex-direction: column;
+}
+
+.locations-bar__header{
+    border-bottom: black 1px solid;
+    padding: 10px 5px;
+}
+
+.location-item{
+    padding: 5px 5px;
+}
+
+.location-item:hover{
+    cursor: pointer;
+}
+
+.display-temperature{
+    font-size: 70px;
+    margin: auto;
+}
