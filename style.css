@@ -88,6 +88,7 @@ button {
 
 .weather-display{
     border-bottom: black 1px solid;
+    position: relative;
     display: flex;
 }
 
@@ -122,6 +123,8 @@ button {
 }
 
 .location-item{
+    display: flex;
+    justify-content: space-between;
     padding: 5px 5px;
 }
 
@@ -132,4 +135,28 @@ button {
 .display-temperature{
     font-size: 70px;
     margin: auto;
+}
+
+.add-to-favourite_button{
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+.add-to-favourite_button img{
+    height: inherit;
+    width: inherit;
+}
+
+
+.location-item__delete{
+    width: 22px;
+    height: 22px;
+}
+
+.location-item__delete img{
+    height: inherit;
+    width: inherit;
 }
