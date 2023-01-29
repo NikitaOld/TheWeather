@@ -5,32 +5,55 @@ const searchForm = document.querySelector('#search-form'),
       addToFavouriteButton = document.querySelector('#addToFavouriteButton'),
       locationBarList = document.querySelector('#locationBarList');
 
-let cityName = '';
+let favouriteList = [];
 
 const serverUrl = 'http://api.openweathermap.org/data/2.5/weather',
       apiKey = '2f0a8362025528a4e6b5c6972b631f0c';
 
-function addToLocalStorage(){
 
+function addToLocalStorage(list){
+    localStorage.setItem('favouriteList', JSON.stringify(list));
 }
 
 function getFromLocalStorage(){
-
+    let temp = JSON.parse(localStorage.getItem('favouriteList'));
+    if (temp.length > 0){
+        temp.forEach((item) => {
+            try{
+                createLocationItem(item.itemName, item.itemKey);
+            } catch (err){
+                alert(err)
+            }
+        })
+    }
 }
 
-function deleteItem(event) {
-    const item = event.target.closest('.location-item');
+function renderLocationItem(locationItem){
+    locationBarList.prepend(locationItem)
+}
+
+function deleteItem(itemId, e){
+    let item = e.target.closest('.location-item');
     item.remove();
+
+    favouriteList = favouriteList.filter(item => {
+        return item.itemKey !== itemId;
+    });
+
+    // update the localStorage
+    addToLocalStorage(favouriteList);
 }
 
 function bindEvents(locationItem){
     const delBtn = locationItem.querySelector('.location-item__delete-btn');
-    delBtn.addEventListener('click', deleteItem)
+    delBtn.addEventListener('click', e => {
+        deleteItem(locationItem.itemKey, e)
+    })
 
-    const locationName = locationItem.querySelector('.location-item__city').innerText;
-    locationItem.addEventListener('click', () => {
-        searchFormInput.value = locationName;
-    });
+    // const locationName = locationItem.querySelector('.location-item__city').innerText;
+    // locationItem.addEventListener('click', () => {
+    //     searchFormInput.value = locationName;
+    // });
 }
 
 function createElement(tag, props, ...children){
@@ -48,17 +71,18 @@ function createElement(tag, props, ...children){
     return element;
 }
 
-function createLocationItem(text) {
+function createLocationItem(itemName, itemId){
     const delIcon = createElement('img', {src: 'resources/delete_icon.png'}),
           locationItemDeleteBtn = createElement('button', { className: 'location-item__delete-btn'}, delIcon),
-          locationItemCity = createElement('span', { className: 'location-item__city', innerText: text}),
-          locationItem = createElement('li', { className: 'location-item' }, locationItemCity, locationItemDeleteBtn);
+          locationItemCity = createElement('span', { className: 'location-item__city', innerText: itemName}),
+          locationItem = createElement('li', { className: 'location-item', 'itemKey': itemId, 'itemName': itemName }, locationItemCity, locationItemDeleteBtn);
+
+    favouriteList.push(locationItem);
+    addToLocalStorage(favouriteList);
 
     bindEvents(locationItem);
 
-
-
-    return locationItem;
+    renderLocationItem(locationItem);
 }
 
 function setWeatherDisplay(temp){
@@ -69,32 +93,18 @@ function setUrl(cityName){
     return `${serverUrl}?q=${cityName}&appid=${apiKey}&units=metric`;
 }
 
-function getInputCityName(){
-    return searchFormInput.value;
-}
+addToFavouriteButton.addEventListener('click', () => {
+    createLocationItem(searchFormInput.value, Date.now());
+});
 
-function main(){
-    document.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.length > 0){
+searchForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let url = setUrl(searchFormInput.value);
 
-        }
-    })
+    fetch(url)
+        .then(res => res.json())
+        .then(data => setWeatherDisplay(parseInt(data.main.temp)))
+        .catch(err => alert(err))
+})
 
-    searchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        cityName = getInputCityName();
-        let url = setUrl(cityName);
-
-        fetch(url)
-            .then(res => res.json())
-            .then(data => setWeatherDisplay(parseInt(data.main.temp)))
-            .catch(err => alert(err))
-    });
-
-    addToFavouriteButton.addEventListener('click', () => {
-        let locationItem = createLocationItem(getInputCityName());
-        locationBarList.prepend(locationItem);
-    });
-}
-
-main();
+getFromLocalStorage();
